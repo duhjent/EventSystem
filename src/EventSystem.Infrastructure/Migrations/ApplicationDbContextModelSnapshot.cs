@@ -35,8 +35,8 @@ namespace EventSystem.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrganizerId")
-                        .HasColumnType("int");
+                    b.Property<string>("OrganizerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -50,8 +50,8 @@ namespace EventSystem.Infrastructure.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("EventId", "UserId");
 
@@ -62,19 +62,10 @@ namespace EventSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("EventSystem.ApplicationCore.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdentityUserId")
-                        .IsUnique()
-                        .HasFilter("[IdentityUserId] IS NOT NULL");
+                    b.HasKey("IdentityUserId");
 
                     b.ToTable("DomainUsers");
                 });
@@ -282,9 +273,7 @@ namespace EventSystem.Infrastructure.Migrations
                 {
                     b.HasOne("EventSystem.ApplicationCore.Entities.User", "Organizer")
                         .WithMany("OrganizedEvents")
-                        .HasForeignKey("OrganizerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrganizerId");
                 });
 
             modelBuilder.Entity("EventSystem.ApplicationCore.Entities.EventParticipant", b =>
@@ -306,7 +295,9 @@ namespace EventSystem.Infrastructure.Migrations
                 {
                     b.HasOne("EventSystem.Infrastructure.Identity.ApplicationUser", null)
                         .WithOne("DomainUser")
-                        .HasForeignKey("EventSystem.ApplicationCore.Entities.User", "IdentityUserId");
+                        .HasForeignKey("EventSystem.ApplicationCore.Entities.User", "IdentityUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

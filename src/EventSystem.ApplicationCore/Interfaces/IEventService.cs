@@ -12,5 +12,6 @@ namespace EventSystem.ApplicationCore.Interfaces
         Task<EventViewModel> Update(EventViewModel eventModel);
         Task DeleteById(int id);
         Task<EventViewModel> AddUser(string username, int eventId);
+        Task<List<UserShortViewModel>> GetConnectedUsers(int eventId);
     }
 }

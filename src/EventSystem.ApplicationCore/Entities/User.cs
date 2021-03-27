@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EventSystem.ApplicationCore.Entities
 {
-    public class User : BaseEntity
+    public class User
     {
         public string IdentityUserId { get; set; }
         public List<Event> OrganizedEvents { get; set; }

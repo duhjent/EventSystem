@@ -32,6 +32,9 @@ namespace EventSystem.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<User>()
+                .HasKey(u => u.IdentityUserId);
+
+            builder.Entity<User>()
                 .HasMany(du => du.ConnectedEvents)
                 .WithOne(ep => ep.User)
                 .HasForeignKey(ep => ep.UserId)

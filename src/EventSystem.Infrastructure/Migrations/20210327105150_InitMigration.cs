@@ -157,19 +157,17 @@ namespace EventSystem.Infrastructure.Migrations
                 name: "DomainUsers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdentityUserId = table.Column<string>(nullable: true)
+                    IdentityUserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DomainUsers", x => x.Id);
+                    table.PrimaryKey("PK_DomainUsers", x => x.IdentityUserId);
                     table.ForeignKey(
                         name: "FK_DomainUsers_AspNetUsers_IdentityUserId",
                         column: x => x.IdentityUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,7 +179,7 @@ namespace EventSystem.Infrastructure.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     EventDate = table.Column<DateTime>(nullable: false),
-                    OrganizerId = table.Column<int>(nullable: false)
+                    OrganizerId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -190,8 +188,8 @@ namespace EventSystem.Infrastructure.Migrations
                         name: "FK_Events_DomainUsers_OrganizerId",
                         column: x => x.OrganizerId,
                         principalTable: "DomainUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdentityUserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -199,7 +197,7 @@ namespace EventSystem.Infrastructure.Migrations
                 columns: table => new
                 {
                     EventId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
+                    UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -214,7 +212,7 @@ namespace EventSystem.Infrastructure.Migrations
                         name: "FK_EventParticipants_DomainUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "DomainUsers",
-                        principalColumn: "Id",
+                        principalColumn: "IdentityUserId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -256,13 +254,6 @@ namespace EventSystem.Infrastructure.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DomainUsers_IdentityUserId",
-                table: "DomainUsers",
-                column: "IdentityUserId",
-                unique: true,
-                filter: "[IdentityUserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventParticipants_UserId",

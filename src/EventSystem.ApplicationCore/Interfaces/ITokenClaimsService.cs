@@ -2,7 +2,7 @@
 
 namespace EventSystem.ApplicationCore.Interfaces
 {
-    interface IClaimsTokenService
+    public interface ITokenClaimsService
     {
         Task<string> GenerateTokenAsync(string username);
     }
