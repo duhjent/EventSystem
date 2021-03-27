@@ -4,16 +4,13 @@ using EventSystem.Infrastructure.Data;
 using EventSystem.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace EventSystem.WebApi
 {
@@ -44,6 +41,22 @@ namespace EventSystem.WebApi
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Bearer";
+                options.DefaultAuthenticateScheme = "Bearer";
+                options.DefaultChallengeScheme = "Bearer";
+            })
+                .AddJwtBearer("Bearer", config =>
+                {
+                    config.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                        ValidateIssuer = false,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtKey"]))
+                    };
+                });
+
             services.AddScoped<IEventRepository, EfCoreEventRepository>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IUserService, IdentityUserService>();
@@ -58,6 +71,9 @@ namespace EventSystem.WebApi
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

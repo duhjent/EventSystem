@@ -1,5 +1,6 @@
 ﻿using EventSystem.ApplicationCore.Dtos;
 using EventSystem.ApplicationCore.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace EventSystem.WebApi.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
+    [Authorize]
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;

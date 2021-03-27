@@ -8,7 +8,6 @@ namespace EventSystem.Infrastructure.Identity
 {
     public class ApplicationUser : IdentityUser
     {
-        public int DomainUserId { get; set; }
         public User DomainUser { get; set; }
     }
 }

@@ -62,12 +62,22 @@ namespace EventSystem.Infrastructure.Identity
                 .Include(au => au.DomainUser).ThenInclude(du => du.ConnectedEvents).ThenInclude(ep => ep.Event)
                 .FirstOrDefaultAsync(x => x.UserName == username);
 
+            if (result == null)
+            {
+                throw new ItemNotFoundException<User>($"User with {username} not found");
+            }
+
             return result.DomainUser;
         }
 
         public async Task<UserShortViewModel> FindShortById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                throw new ItemNotFoundException<User>($"User with {id} not found");
+            }
 
             return new UserShortViewModel
             {
@@ -79,6 +89,11 @@ namespace EventSystem.Infrastructure.Identity
         public async Task<UserShortViewModel> FindShortByUserName(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null)
+            {
+                throw new ItemNotFoundException<User>($"User with {username} not found");
+            }
 
             return new UserShortViewModel
             {
@@ -92,7 +107,8 @@ namespace EventSystem.Infrastructure.Identity
             var user = new ApplicationUser
             {
                 UserName = registrationModel.UserName,
-                Email = registrationModel.Email
+                Email = registrationModel.Email,
+                DomainUser = new User { }
             };
             var result = await _userManager.CreateAsync(user, registrationModel.Password);
 
