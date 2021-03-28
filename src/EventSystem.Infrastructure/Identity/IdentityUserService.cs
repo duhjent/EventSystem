@@ -16,7 +16,7 @@ namespace EventSystem.Infrastructure.Identity
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _ctx;
 
-        public IdentityUserService(UserManager<ApplicationUser> userManager, ApplicationDbContext ctx)
+        public IdentityUserService(UserManager<ApplicationUser> userManager, ApplicationDbContext ctx, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _ctx = ctx;
@@ -111,11 +111,16 @@ namespace EventSystem.Infrastructure.Identity
                 DomainUser = new User { }
             };
             var result = await _userManager.CreateAsync(user, registrationModel.Password);
-
             if (!result.Succeeded)
             {
                 throw new ArgumentException();
             }
+
+            var roleName = registrationModel.Role == null
+                || !Enum.TryParse(typeof(AvailableRoles), registrationModel.Role, out _)
+                ? "User" : registrationModel.Role;
+
+            await _userManager.AddToRoleAsync(user, roleName);
         }
     }
 }

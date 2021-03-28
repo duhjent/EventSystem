@@ -24,7 +24,7 @@ namespace EventSystem.WebApi.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<ActionResult<UserViewModel>> GetAll(string username) => await _userService.FindByUserName(username);
+        public async Task<ActionResult<UserViewModel>> GetUser(string username) => await _userService.FindByUserName(username);
 
         [HttpPost]
         public async Task<ActionResult<string>> RegisterUser([FromBody] RegistrationBindingModel registrationModel)

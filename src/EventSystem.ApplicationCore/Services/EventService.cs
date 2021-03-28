@@ -53,6 +53,20 @@ namespace EventSystem.ApplicationCore.Services
             return result;
         }
 
+        public async Task<List<EventShortViewModel>> GetConnected(string userName)
+        {
+            var user = await _userService.FindByUserName(userName);
+
+            return user.ConnectedEvents;
+        }
+
+        public async Task<List<EventShortViewModel>> GetOrganized(string userName)
+        {
+            var user = await _userService.FindByUserName(userName);
+
+            return user.OrganizedEvents;
+        }
+
         public async Task<List<UserShortViewModel>> GetConnectedUsers(int eventId)
         {
             var evtEntity = await _repo.GetById(eventId);
@@ -65,14 +79,15 @@ namespace EventSystem.ApplicationCore.Services
             return result;
         }
 
-        public async Task<EventViewModel> Save(EventViewModel eventModel)
+        public async Task<EventViewModel> Save(EventViewModel eventModel, string organizerUserName)
         {
             var entity = new Event
             {
                 Name = eventModel.Name,
                 Description = eventModel.Description,
                 EventDate = eventModel.EventDate,
-                Organizer = await _userService.FindDomainUserByUserName(eventModel.Organizer.UserName)
+                Organizer = await _userService.FindDomainUserByUserName(organizerUserName),
+                Participants = new List<EventParticipant>()
             };
 
             await _repo.Save(entity);
